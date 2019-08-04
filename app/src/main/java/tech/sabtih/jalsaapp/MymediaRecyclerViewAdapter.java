@@ -2,6 +2,8 @@ package tech.sabtih.jalsaapp;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,13 +43,14 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(""+mValues.get(position).getID());
+       // holder.mIdView.setText(""+mValues.get(position).getID());
         holder.mContentView.setText(mValues.get(position).getTitle());
         if(mValues.get(position).getType() == 0){
             Picasso.get().load(R.drawable.folder).resize(200, 200).centerCrop() .into(holder.image);
-            //holder.image.setImageResource(R.drawable.folder);
+           /// Bitmap fldr = BitmapFactory.
+           /// holder.image.setImageResource(R.drawable.folder);
         }else{
-            Picasso.get().load("https://drive.google.com/uc?export=view&id="+mValues.get(position).getImageid()).resize(200, 200).centerCrop() .into(holder.image);
+            Picasso.get().load("https://drive.google.com/thumbnail?authuser=0&sz=w300&id="+mValues.get(position).getImageid()).resize(200, 200).centerCrop().noFade() .into(holder.image);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +72,7 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+
         public final TextView mContentView;
         public final ImageView image;
         public JalsaMedia mItem;
@@ -77,7 +80,7 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
+
             mContentView = (TextView) view.findViewById(R.id.content);
             image = view.findViewById(R.id.myimage);
         }

@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
             Intent intent = new Intent(this,videos.class);
+            intent.putExtra("parent","0");
             startActivity(intent);
 
 

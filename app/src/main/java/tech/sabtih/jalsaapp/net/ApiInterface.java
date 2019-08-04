@@ -6,6 +6,7 @@ import retrofit2.Call;
 
 import retrofit2.http.GET;
 
+import retrofit2.http.Query;
 import tech.sabtih.jalsaapp.dummy.JalsaMedia;
 
 public interface ApiInterface {
@@ -25,7 +26,7 @@ public interface ApiInterface {
 // for GET request
 
     @GET("/jalsa/api/?service=gallery") // specify the sub url for our base url
-    Call<List<JalsaMedia>> getMediaList();
+    Call<List<JalsaMedia>> getMediaList(@Query("path") String parent);
 
 // CountryResponse is a POJO class which receives the response of this API
 

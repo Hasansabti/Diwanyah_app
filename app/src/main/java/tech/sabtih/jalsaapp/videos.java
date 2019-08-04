@@ -1,5 +1,6 @@
 package tech.sabtih.jalsaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,9 +40,14 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
         rv = findViewById(R.id.list);
 
         vid = this;
+
+        String parent= getIntent().getExtras().getString("parent");
+        if(getIntent().hasExtra("title")){
+            setTitle(getIntent().getExtras().getString("title"));
+        }
         ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
 
-        Call<List<JalsaMedia>> media = service.getMediaList();
+        Call<List<JalsaMedia>> media = service.getMediaList(parent);
         media.enqueue(new Callback<List<JalsaMedia>>() {
             @Override
             public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
@@ -79,6 +85,18 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
 
     @Override
     public void onListFragmentInteraction(JalsaMedia item) {
+        if(item.getType() == 0) {
+
+            Intent intent = new Intent(this, videos.class);
+            intent.putExtra("parent", "" + item.getID());
+            intent.putExtra("title", "" + item.getTitle());
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this, Imageviewer.class);
+            intent.putExtra("imageid", "" + item.getImageid());
+            intent.putExtra("title", "" + item.getTitle());
+            startActivity(intent);
+        }
 
     }
 }
