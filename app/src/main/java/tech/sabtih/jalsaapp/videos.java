@@ -1,18 +1,27 @@
 package tech.sabtih.jalsaapp;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.util.List;
@@ -30,6 +39,7 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
     RecyclerView rv;
     videos vid;
 
+    MymediaRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +58,7 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
         ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
 
         Call<List<JalsaMedia>> media = service.getMediaList(parent);
+
         media.enqueue(new Callback<List<JalsaMedia>>() {
             @Override
             public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
@@ -59,7 +70,8 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
                 } else {
                     recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
                 }
-                recyclerView.setAdapter(new MymediaRecyclerViewAdapter(response.body(), vid));
+                adapter = new MymediaRecyclerViewAdapter(response.body(), vid);
+                recyclerView.setAdapter(adapter);
 
             }
 
@@ -77,8 +89,20 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.upload, popup.getMenu());
+                popup.show();
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+
+                        return false;
+                    }
+                });
+
             }
         });
     }
@@ -91,12 +115,49 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
             intent.putExtra("parent", "" + item.getID());
             intent.putExtra("title", "" + item.getTitle());
             startActivity(intent);
-        }else{
+        }else if(item.getType() == 1) {
             Intent intent = new Intent(this, Imageviewer.class);
             intent.putExtra("imageid", "" + item.getImageid());
             intent.putExtra("title", "" + item.getTitle());
             startActivity(intent);
         }
 
+    }
+     class test extends  DialogFragment{
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("")
+                    .setPositiveButton("", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+
+                            ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
+
+                            Call<List<JalsaMedia>> media = service.getMediaList("1");
+                            media.enqueue(new Callback<List<JalsaMedia>>() {
+                                @Override
+                                public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<JalsaMedia>> call, Throwable t) {
+
+                                }
+                            });
+
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton("", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
     }
 }

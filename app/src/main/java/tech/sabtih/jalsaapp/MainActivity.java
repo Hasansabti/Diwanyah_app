@@ -1,5 +1,6 @@
 package tech.sabtih.jalsaapp;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,12 +23,28 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import tech.sabtih.jalsaapp.dummy.JalsaMedia;
+import tech.sabtih.jalsaapp.dummy.itemnop;
+import tech.sabtih.jalsaapp.net.Api;
+import tech.sabtih.jalsaapp.net.ApiInterface;
 
 
 public class MainActivity extends AppCompatActivity
@@ -61,6 +78,32 @@ public class MainActivity extends AppCompatActivity
         Bitmap bm = BitmapFactory.decodeFile(images.getPath());
         img.setImageBitmap(bm);
         System.out.println(Environment.getExternalStorageDirectory());
+
+  //      ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+        ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
+
+        Call<itemnop> media = service.getNop();
+        media.enqueue(new Callback<itemnop>() {
+            @Override
+            public void onResponse(Call<itemnop> call, Response<itemnop> response) {
+
+                    Toast.makeText(MainActivity.this, response.body().getNop(), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<itemnop> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(t.getLocalizedMessage());
+            }
+        });
+
     }
 
     @Override
@@ -82,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar itemnop clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -98,7 +141,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation view itemnop clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {

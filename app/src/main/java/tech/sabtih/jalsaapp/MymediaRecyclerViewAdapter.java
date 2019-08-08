@@ -25,12 +25,15 @@ import java.util.List;
  */
 public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecyclerViewAdapter.ViewHolder> {
 
-    private final List<JalsaMedia> mValues;
+    private  List<JalsaMedia> mValues;
     private final OnListFragmentInteractionListener mListener;
 
     public MymediaRecyclerViewAdapter(List<JalsaMedia> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+    }
+    public void setValues(List<JalsaMedia> values){
+        this.mValues = values;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
+                    // fragment is attached to one) that an itemnop has been selected.
                     mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
