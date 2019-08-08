@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -38,8 +40,9 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
 
     RecyclerView rv;
     videos vid;
+    static String parent;
 
-    MymediaRecyclerViewAdapter adapter;
+    static MymediaRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +54,7 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
 
         vid = this;
 
-        String parent= getIntent().getExtras().getString("parent");
+        parent= getIntent().getExtras().getString("parent");
         if(getIntent().hasExtra("title")){
             setTitle(getIntent().getExtras().getString("title"));
         }
@@ -98,6 +101,9 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
+                        DialogFragment df = new mydialog();
+                        df.show(getSupportFragmentManager(),"createfile");
+
 
                         return false;
                     }
@@ -105,6 +111,57 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
 
             }
         });
+    }
+
+
+    public static class mydialog extends DialogFragment{
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+            final View v = inflater.inflate(R.layout.createfile_layout, null);
+
+            builder.setMessage("Create folder")
+                    .setView(v)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+                            TextView nametv = v.findViewById(R.id.username);
+                            String name  = nametv.getText().toString();
+
+                            ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
+
+                            Call<List<JalsaMedia>> media = service.createfile(name, parent);
+                            media.enqueue(new Callback<List<JalsaMedia>>() {
+                                @Override
+                                public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
+                                    adapter.setValues(response.body());
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<JalsaMedia>> call, Throwable t) {
+
+                                }
+                            });
+
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+
     }
 
     @Override
@@ -123,41 +180,5 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
         }
 
     }
-     class test extends  DialogFragment{
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("")
-                    .setPositiveButton("", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
 
-                            ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
-
-                            Call<List<JalsaMedia>> media = service.getMediaList("1");
-                            media.enqueue(new Callback<List<JalsaMedia>>() {
-                                @Override
-                                public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
-                                    adapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onFailure(Call<List<JalsaMedia>> call, Throwable t) {
-
-                                }
-                            });
-
-                            adapter.notifyDataSetChanged();
-                        }
-                    })
-                    .setNegativeButton("", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
-    }
 }
