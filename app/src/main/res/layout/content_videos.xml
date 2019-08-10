@@ -18,5 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".mediaFragment"
-        tools:listitem="@layout/fragment_media" />
+        tools:listitem="@layout/fragment_media">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

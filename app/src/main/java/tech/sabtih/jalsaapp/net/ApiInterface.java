@@ -20,6 +20,9 @@ public interface ApiInterface {
     @GET("/jalsa/api/?service=newfolder") // specify the sub url for our base url
     Call<List<JalsaMedia>> createfile(@Query("name") String name,@Query("parent") String parent);
 
+    @GET("/jalsa/api/?service=delete") // specify the sub url for our base url
+    Call<List<JalsaMedia>> deletefiles(@Query("files[]") List<String> files,@Query("parent") String parent);
+
     @GET("/jalsa/api/?service=nop")
     Call<itemnop> getNop();
 

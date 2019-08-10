@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="نقل" />
-    <item android:title="حذف" />
+    <item
+        android:id="@+id/cancel"
+        android:icon="@android:drawable/ic_input_delete"
+        android:title="@android:string/cancel"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/move"
+        android:title="نقل"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="حذف"
+        app:showAsAction="always" />
 </menu>

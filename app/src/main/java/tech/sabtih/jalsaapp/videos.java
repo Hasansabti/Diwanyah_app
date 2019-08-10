@@ -48,6 +48,7 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
     static String parent;
 
     private int showmenu = R.menu.mediaselect;
+    Toolbar tb;
 
     static MymediaRecyclerViewAdapter adapter;
     @Override
@@ -58,8 +59,38 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
         setSupportActionBar(toolbar);
 
         rv = findViewById(R.id.list);
+        tb = findViewById(R.id.mymenu);
 
         vid = this;
+
+        tb.setTitle("Editing");
+        tb.inflateMenu(R.menu.mediaselect);
+        tb.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getItemId() == R.id.delete){
+                    ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
+                    Call<List<JalsaMedia>> media = service.deletefiles(adapter.selected, parent);
+                    media.enqueue(new Callback<List<JalsaMedia>>() {
+                        @Override
+                        public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
+                            adapter.setValues(response.body());
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<JalsaMedia>> call, Throwable t) {
+
+                        }
+                    });
+                 }
+
+                return false;
+            }
+        });
+
+
 
 
 
@@ -122,6 +153,7 @@ if(menuItem.getItemId() == R.id.addflder) {
 
     adapter.setSelect(true);
     adapter.notifyDataSetChanged();
+    tb.setVisibility(View.VISIBLE);
 
 }
                         return false;
@@ -152,8 +184,8 @@ if(menuItem.getItemId() == R.id.addflder) {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(showmenu, menu);
+       // MenuInflater inflater = getMenuInflater();
+       // inflater.inflate(showmenu, menu);
         /*
         if (adapter.select == false)
         {
