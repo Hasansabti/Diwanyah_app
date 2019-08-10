@@ -2,6 +2,7 @@ package tech.sabtih.jalsaapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -19,9 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +47,8 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
     videos vid;
     static String parent;
 
+    private int showmenu = R.menu.mediaselect;
+
     static MymediaRecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +61,15 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
 
         vid = this;
 
+
+
         parent= getIntent().getExtras().getString("parent");
         if(getIntent().hasExtra("title")){
             setTitle(getIntent().getExtras().getString("title"));
         }
         ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
 
-        Call<List<JalsaMedia>> media = service.getMediaList(parent);
+        final Call<List<JalsaMedia>> media = service.getMediaList(parent);
 
         media.enqueue(new Callback<List<JalsaMedia>>() {
             @Override
@@ -101,18 +110,62 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
-                        DialogFragment df = new mydialog();
-                        df.show(getSupportFragmentManager(),"createfile");
 
+if(menuItem.getItemId() == R.id.addflder) {
+     DialogFragment df = new mydialog();
+    df.show(getSupportFragmentManager(),"createfile");
+}else {
+    ActionBar actionBar = getSupportActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(false);
+     actionBar.setDisplayShowCustomEnabled(true);
+    actionBar.setDisplayShowTitleEnabled(false);
 
+    adapter.setSelect(true);
+    adapter.notifyDataSetChanged();
+
+}
                         return false;
                     }
                 });
 
             }
         });
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(false);
+        //actionBar.setDisplayShowTitleEnabled(false);
+
+        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.media_bar, null);
+        CheckBox cb = v.findViewById(R.id.selectall);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                adapter.selectAll(b);
+            }
+        });
+
+        actionBar.setCustomView(v);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(showmenu, menu);
+        /*
+        if (adapter.select == false)
+        {
+            for (int i = 0; i < menu.size(); i++)
+                menu.getItem(i).setVisible(false);
+        }else {
+            for (int i = 0; i < menu.size(); i++)
+                menu.getItem(i).setVisible(true);
+        }
+        */
+        return super.onCreateOptionsMenu(menu);
+    }
 
     public static class mydialog extends DialogFragment{
 

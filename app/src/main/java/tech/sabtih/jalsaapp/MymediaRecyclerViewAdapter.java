@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import tech.sabtih.jalsaapp.dummy.JalsaMedia;
 import tech.sabtih.jalsaapp.mediaFragment.OnListFragmentInteractionListener;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,8 +27,10 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type.
  */
 public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecyclerViewAdapter.ViewHolder> {
-
+    public boolean select = false;
+    public ArrayList<String> selected = new ArrayList<>();
     private  List<JalsaMedia> mValues;
+    public boolean selectall = false;
     private final OnListFragmentInteractionListener mListener;
 
     public MymediaRecyclerViewAdapter(List<JalsaMedia> items, OnListFragmentInteractionListener listener) {
@@ -38,9 +43,12 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_media, parent, false);
         return new ViewHolder(view);
+
     }
 
     @Override
@@ -66,11 +74,42 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
                 }
             }
         });
+
+        if(select == true){
+            if(selectall){
+                holder.cb.setChecked(true);
+            }else{
+                holder.cb.setChecked(false);
+            }
+            holder.cb.setVisibility(View.VISIBLE);
+        }else{
+            holder.cb.setVisibility(View.GONE);
+        }
+
+        holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    selected.add(""+holder.mItem.getID());
+                }else{
+                    selected.remove(""+holder.mItem.getID());
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public void setSelect(boolean b) {
+        select = b;
+    }
+
+    public void selectAll(boolean allselect) {
+        selectall = allselect;
+         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -79,6 +118,7 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
         public final TextView mContentView;
         public final ImageView image;
         public JalsaMedia mItem;
+        public CheckBox cb;
 
         public ViewHolder(View view) {
             super(view);
@@ -86,7 +126,10 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
 
             mContentView = (TextView) view.findViewById(R.id.content);
             image = view.findViewById(R.id.myimage);
+            cb = view.findViewById(R.id.checkBox);
+
         }
+
 
         @Override
         public String toString() {

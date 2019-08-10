@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="اضافة صوره" />
-    <item android:title="اضافة ملف" />
+    <item
+        android:id="@+id/select"
+        android:title="select" />
+    <item
+        android:id="@+id/addimg"
+        android:title="اضافة صوره" />
+    <item
+        android:id="@+id/addflder"
+        android:title="اضافة ملف" />
 </menu>
