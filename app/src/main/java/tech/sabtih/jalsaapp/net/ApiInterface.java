@@ -11,6 +11,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import tech.sabtih.jalsaapp.dummy.JalsaMedia;
 import tech.sabtih.jalsaapp.dummy.itemnop;
+import tech.sabtih.jalsaapp.dummy.user;
+import tech.sabtih.jalsaapp.dummy.userdata;
 
 public interface ApiInterface {
 
@@ -25,6 +27,13 @@ public interface ApiInterface {
 
     @GET("/jalsa/api/?service=nop")
     Call<itemnop> getNop();
+
+    @GET("/jalsa/api/?service=users")
+    Call<List<user>> getUSers();
+
+    @GET("/jalsa/api/?service=userdata")
+    Call<userdata> getUsersata(@Query("id") int id);
+
 
 
 }

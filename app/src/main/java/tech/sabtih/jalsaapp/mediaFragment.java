@@ -108,5 +108,7 @@ public class mediaFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(JalsaMedia item);
+
+        void onListLongClick(JalsaMedia mItem);
     }
 }

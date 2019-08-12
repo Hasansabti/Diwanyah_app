@@ -70,11 +70,13 @@ public class videos extends AppCompatActivity implements mediaFragment.OnListFra
             public boolean onMenuItemClick(MenuItem item) {
 
                 if(item.getItemId() == R.id.delete){
+
                     ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
                     Call<List<JalsaMedia>> media = service.deletefiles(adapter.selected, parent);
                     media.enqueue(new Callback<List<JalsaMedia>>() {
                         @Override
                         public void onResponse(Call<List<JalsaMedia>> call, Response<List<JalsaMedia>> response) {
+
                             adapter.setValues(response.body());
                             adapter.notifyDataSetChanged();
                         }
@@ -264,6 +266,18 @@ if(menuItem.getItemId() == R.id.addflder) {
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onListLongClick(JalsaMedia mItem) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        adapter.setSelect(true);
+        adapter.notifyDataSetChanged();
+        tb.setVisibility(View.VISIBLE);
     }
 
 }

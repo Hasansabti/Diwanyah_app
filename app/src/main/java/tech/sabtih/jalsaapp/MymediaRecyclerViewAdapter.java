@@ -74,7 +74,15 @@ public class MymediaRecyclerViewAdapter extends RecyclerView.Adapter<MymediaRecy
                 }
             }
         });
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
 
+                mListener.onListLongClick(holder.mItem);
+                holder.cb.setChecked(true);
+                return false;
+            }
+        });
         if(select == true){
             if(selectall){
                 holder.cb.setChecked(true);

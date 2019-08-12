@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -43,14 +44,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import tech.sabtih.jalsaapp.dummy.JalsaMedia;
 import tech.sabtih.jalsaapp.dummy.itemnop;
+import tech.sabtih.jalsaapp.dummy.userdata;
 import tech.sabtih.jalsaapp.net.Api;
 import tech.sabtih.jalsaapp.net.ApiInterface;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, logindialog.dialoglistener {
 
     ImageView img;
+    ImageView pimage;
+    TextView username;
+    TextView userdata;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +77,17 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        View hView =  navigationView.getHeaderView(0);
+        pimage = hView.findViewById(R.id.pimage);
+        username = hView.findViewById(R.id.username);
+        userdata = hView.findViewById(R.id.userdata);
+        pimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logindialog login = new logindialog();
+                login.show(getSupportFragmentManager(),"login");
+            }
+        });
 
         img = findViewById(R.id.imagetest);
         File images = new File(Environment.getExternalStorageDirectory().toString()+"/myimages/001.jpg");
@@ -86,23 +102,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
 
-        Call<itemnop> media = service.getNop();
-        media.enqueue(new Callback<itemnop>() {
-            @Override
-            public void onResponse(Call<itemnop> call, Response<itemnop> response) {
-
-                    Toast.makeText(MainActivity.this, response.body().getNop(), Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onFailure(Call<itemnop> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                System.out.println(t.getLocalizedMessage());
-            }
-        });
 
     }
 
@@ -166,5 +166,27 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onLogin(int userid) {
+        System.out.println("==============="+userid);
+        ApiInterface service = Api.getRetrofitInstance().create(ApiInterface.class);
+
+        final Call<userdata> userdet = service.getUsersata(userid);
+        userdet.enqueue(new Callback<userdata>() {
+            @Override
+            public void onResponse(Call<userdata> call, Response<userdata> response) {
+                username.setText(response.body().getDetails().getName());
+                userdata.setText(response.body().getForyou());
+            }
+
+            @Override
+            public void onFailure(Call<userdata> call, Throwable t) {
+
+            }
+        });
+
+
     }
 }
