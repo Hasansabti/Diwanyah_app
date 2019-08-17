@@ -1,35 +1,40 @@
 package tech.sabtih.jalsaapp.dummy;
 
+import com.google.gson.annotations.SerializedName;
+
 public class userdata {
 
     user details;
-    String req;
-    String unpays;
-    String foryou;
-    String unpaid;
-    String myamnt;
+   // String req;
+    //String unpays;
+   // String foryou;
+
+
+    private double myamnt;
+    private double unpaid;
+
 
     public user getDetails() {
         return details;
     }
 
-    public String getReq() {
-        return req;
-    }
+   // public String getReq() {
+     //   return req;
+   // }
 
-    public String getUnpays() {
-        return unpays;
-    }
+    //public String getUnpays() {
+    //    return unpays;
+   // }
 
-    public String getForyou() {
-        return foryou;
-    }
+   // public String getForyou() {
+   //     return foryou;
+    //}
 
-    public String getUnpaid() {
+    public double getUnpaid() {
         return unpaid;
     }
 
-    public String getMyamnt() {
+    public double getMyamnt() {
         return myamnt;
     }
 }

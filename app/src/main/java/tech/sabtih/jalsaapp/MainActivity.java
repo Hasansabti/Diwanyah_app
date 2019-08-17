@@ -1,7 +1,9 @@
 package tech.sabtih.jalsaapp;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -101,10 +104,22 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+        SharedPreferences sharedPref = getSharedPreferences("jalsa",Context.MODE_PRIVATE);
+        int userid = sharedPref.getInt("userid",-1);
+
+        if(userid != -1){
+            onLogin(userid);
+        }
+
+
+
 
 
 
     }
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -177,16 +192,21 @@ public class MainActivity extends AppCompatActivity
         userdet.enqueue(new Callback<userdata>() {
             @Override
             public void onResponse(Call<userdata> call, Response<userdata> response) {
+
+                //System.out.println(new Gson().toJson(response));
                 username.setText(response.body().getDetails().getName());
-                userdata.setText(response.body().getForyou());
+                userdata.setText(""+response.body().getMyamnt() +" / " + response.body().getUnpaid());
             }
 
             @Override
             public void onFailure(Call<userdata> call, Throwable t) {
+                System.out.println(t.getLocalizedMessage());
 
             }
         });
 
 
     }
+
+
 }
